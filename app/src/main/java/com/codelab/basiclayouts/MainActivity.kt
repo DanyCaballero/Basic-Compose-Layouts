@@ -22,7 +22,9 @@ import androidx.activity.compose.setContent
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
@@ -30,6 +32,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.paddingFromBaseline
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
@@ -92,7 +96,7 @@ fun SearchBar(
 @Composable
 fun AlignYourBodyElement(
     @DrawableRes drawable: Int, //dynamic image
-    @StringRes text: Int, //dynaic text
+    @StringRes text: Int, //dynamic text
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -152,12 +156,20 @@ fun FavoriteCollectionCard(
     }
 }
 
-// Step: Align your body row - Arrangements
+/** Scrollable row of all exercises */
 @Composable
 fun AlignYourBodyRow(
     modifier: Modifier = Modifier
 ) {
-    // Implement composable here
+    LazyRow(
+        horizontalArrangement = Arrangement.spacedBy(8.dp), //Format the Row
+        contentPadding = PaddingValues(horizontal = 8.dp), // This kind of padding is necessary to avoid first and last elements to cut off
+        modifier = modifier
+    ) {
+        items(alignYourBodyData) { item ->
+            AlignYourBodyElement(drawable = item.drawable, text = item.text)
+        }
+    }
 }
 
 // Step: Favorite collections grid - LazyGrid
@@ -210,6 +222,9 @@ fun MySootheAppLandscape(){
 @Composable
 fun MySootheApp() {}
 
+/**
+ * List with string and drawables for the exercises Composable
+ */
 private val alignYourBodyData = listOf(
     R.drawable.ab1_inversions to R.string.ab1_inversions,
     R.drawable.ab2_quick_yoga to R.string.ab2_quick_yoga,
@@ -228,6 +243,7 @@ private val favoriteCollectionsData = listOf(
     R.drawable.fc6_nightly_wind_down to R.string.fc6_nightly_wind_down
 ).map { DrawableStringPair(it.first, it.second) }
 
+/** Give the structure needed for the Lists used in Composables*/
 private data class DrawableStringPair(
     @DrawableRes val drawable: Int,
     @StringRes val text: Int
