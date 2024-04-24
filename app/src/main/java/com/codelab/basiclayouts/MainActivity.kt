@@ -58,6 +58,10 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
+import androidx.compose.material3.windowsizeclass.WindowSizeClass
+import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
+import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -70,9 +74,14 @@ import androidx.compose.ui.unit.dp
 import com.codelab.basiclayouts.ui.theme.MySootheTheme
 
 class MainActivity : ComponentActivity() {
+    /** Create UI, and pass as argument to MySootheApp the screen position (portrait or landscape) */
+    @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContent { MySootheApp() }
+        setContent {
+            val windowSizeClass = calculateWindowSizeClass(activity = this)
+            MySootheApp(windowSizeClass)
+        }
     }
 }
 
@@ -344,9 +353,15 @@ fun MySootheAppLandscape(){
     }
 }
 
-// Step: MySoothe App
+/** Main Composable, that'll decide if show portrait or landscape mode */
 @Composable
-fun MySootheApp() {}
+fun MySootheApp(windowSize: WindowSizeClass) {
+    if (windowSize.widthSizeClass == WindowWidthSizeClass.Compact) {
+        MySootheAppPortrait()
+    } else if (windowSize.widthSizeClass == WindowWidthSizeClass.Expanded) {
+        MySootheAppLandscape()
+    }
+}
 
 /**
  * List with string and drawables for the exercises Composable
